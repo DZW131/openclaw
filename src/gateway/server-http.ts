@@ -14,6 +14,7 @@ import { loadConfig } from "../config/config.js";
 import type { createSubsystemLogger } from "../logging/subsystem.js";
 import { safeEqualSecret } from "../security/secret-equal.js";
 import { handleSlackHttpRequest } from "../slack/http/index.js";
+import { handleAgentHttpRequest } from "./agent-http.js";
 import {
   AUTH_RATE_LIMIT_SCOPE_HOOK_AUTH,
   createAuthRateLimiter,
@@ -511,6 +512,7 @@ export function createGatewayHttpServer(opts: {
   openAiChatCompletionsEnabled: boolean;
   openResponsesEnabled: boolean;
   openResponsesConfig?: import("../config/types.gateway.js").GatewayHttpResponsesConfig;
+  agentHttpEnabled: boolean;
   strictTransportSecurityHeader?: string;
   handleHooksRequest: HooksRequestHandler;
   handlePluginRequest?: PluginHttpRequestHandler;
@@ -529,6 +531,7 @@ export function createGatewayHttpServer(opts: {
     openAiChatCompletionsEnabled,
     openResponsesEnabled,
     openResponsesConfig,
+    agentHttpEnabled,
     strictTransportSecurityHeader,
     handleHooksRequest,
     handlePluginRequest,
@@ -609,6 +612,18 @@ export function createGatewayHttpServer(opts: {
           name: "openai",
           run: () =>
             handleOpenAiHttpRequest(req, res, {
+              auth: resolvedAuth,
+              trustedProxies,
+              allowRealIpFallback,
+              rateLimiter,
+            }),
+        });
+      }
+      if (agentHttpEnabled) {
+        requestStages.push({
+          name: "agent-http",
+          run: () =>
+            handleAgentHttpRequest(req, res, {
               auth: resolvedAuth,
               trustedProxies,
               allowRealIpFallback,

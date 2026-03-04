@@ -276,9 +276,18 @@ export type GatewayHttpResponsesImagesConfig = {
   timeoutMs?: number;
 };
 
+export type GatewayHttpAgentConfig = {
+  /**
+   * If false, the Gateway will not serve `POST /v1/agent`.
+   * Default: false when absent.
+   */
+  enabled?: boolean;
+};
+
 export type GatewayHttpEndpointsConfig = {
   chatCompletions?: GatewayHttpChatCompletionsConfig;
   responses?: GatewayHttpResponsesConfig;
+  agent?: GatewayHttpAgentConfig;
 };
 
 export type GatewayHttpSecurityHeadersConfig = {

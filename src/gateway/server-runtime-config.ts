@@ -25,6 +25,7 @@ export type GatewayRuntimeConfig = {
   openAiChatCompletionsEnabled: boolean;
   openResponsesEnabled: boolean;
   openResponsesConfig?: import("../config/types.gateway.js").GatewayHttpResponsesConfig;
+  agentHttpEnabled: boolean;
   strictTransportSecurityHeader?: string;
   controlUiBasePath: string;
   controlUiRoot?: string;
@@ -44,6 +45,7 @@ export async function resolveGatewayRuntimeConfig(params: {
   controlUiEnabled?: boolean;
   openAiChatCompletionsEnabled?: boolean;
   openResponsesEnabled?: boolean;
+  agentHttpEnabled?: boolean;
   auth?: GatewayAuthConfig;
   tailscale?: GatewayTailscaleConfig;
 }): Promise<GatewayRuntimeConfig> {
@@ -79,6 +81,8 @@ export async function resolveGatewayRuntimeConfig(params: {
     false;
   const openResponsesConfig = params.cfg.gateway?.http?.endpoints?.responses;
   const openResponsesEnabled = params.openResponsesEnabled ?? openResponsesConfig?.enabled ?? false;
+  const agentHttpEnabled =
+    params.agentHttpEnabled ?? params.cfg.gateway?.http?.endpoints?.agent?.enabled ?? false;
   const strictTransportSecurityConfig =
     params.cfg.gateway?.http?.securityHeaders?.strictTransportSecurity;
   const strictTransportSecurityHeader =
@@ -172,6 +176,7 @@ export async function resolveGatewayRuntimeConfig(params: {
     openResponsesConfig: openResponsesConfig
       ? { ...openResponsesConfig, enabled: openResponsesEnabled }
       : undefined,
+    agentHttpEnabled,
     strictTransportSecurityHeader,
     controlUiBasePath,
     controlUiRoot,
