@@ -208,6 +208,11 @@ export type GatewayServerOptions = {
    */
   openResponsesEnabled?: boolean;
   /**
+   * If true, serve `POST /v1/agent` for direct HTTP agent invocation.
+   * Default: config `gateway.http.endpoints.agent.enabled` (or false when absent).
+   */
+  agentHttpEnabled?: boolean;
+  /**
    * Override gateway auth configuration (merges with config).
    */
   auth?: import("../config/config.js").GatewayAuthConfig;
@@ -452,6 +457,7 @@ export async function startGatewayServer(
     controlUiEnabled: opts.controlUiEnabled,
     openAiChatCompletionsEnabled: opts.openAiChatCompletionsEnabled,
     openResponsesEnabled: opts.openResponsesEnabled,
+    agentHttpEnabled: opts.agentHttpEnabled,
     auth: opts.auth,
     tailscale: opts.tailscale,
   });
@@ -461,6 +467,7 @@ export async function startGatewayServer(
     openAiChatCompletionsEnabled,
     openResponsesEnabled,
     openResponsesConfig,
+    agentHttpEnabled,
     strictTransportSecurityHeader,
     controlUiBasePath,
     controlUiRoot: controlUiRootOverride,
@@ -545,6 +552,7 @@ export async function startGatewayServer(
     openAiChatCompletionsEnabled,
     openResponsesEnabled,
     openResponsesConfig,
+    agentHttpEnabled,
     strictTransportSecurityHeader,
     resolvedAuth,
     rateLimiter: authRateLimiter,
